@@ -1,21 +1,19 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
+
 WORKDIR /app
 EXPOSE 8080
-EXPOSE 8081
-
+EXPOSE 443
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Farm.Api/Farm.Api.csproj", "Farm.Api/"]
-RUN dotnet restore "./Farm.Api/Farm.Api.csproj"
+
+COPY ["Services/Farm.Api/Farm.Api.csproj", "Services/Farm.Api/"]
+
+RUN dotnet restore "./Services/Farm.Api/Farm.Api.csproj"
 COPY . .
-WORKDIR "/src/Farm.Api"
+WORKDIR "/src/Services/Farm.Api"
 RUN dotnet build "./Farm.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
