@@ -129,6 +129,29 @@ The API will be available at `https://localhost:44333` (or as configured).
 
 ---
 
+## Running with IIS Express in Visual Studio
+
+You can run the API using IIS Express directly from Visual Studio for local development and debugging.
+
+### Steps:
+
+1. **Open the Solution in Visual Studio**
+2. **Set `Farm.Api` as the Startup Project**
+3. **Select IIS Express** in the run/debug dropdown at the top of Visual Studio
+4. **Press F5** (or click the green play button) to start debugging
+
+- The API will be hosted at a URL similar to:
+  - `https://localhost:44333` (check the launch profile or output window for the exact port)
+- Swagger UI will be available at:
+  - `https://localhost:44333/swagger`
+
+**Note:**
+- Ensure your `appsettings.Development.json` connection string points to a SQL Server instance accessible from your host (e.g., `Server=localhost;Database=farm-db;User=sa;Password=yourpassword;TrustServerCertificate=True`).
+- If using SQL Server Express, you may use `Server=.\\SQLEXPRESS;...`.
+- If you want to use the Dockerized SQL Server, use `Server=localhost,1433;User=sa;Password=dockerABC@123;...` and ensure the SQL Server container is running.
+
+---
+
 ## Testing
 
 Run all tests:
