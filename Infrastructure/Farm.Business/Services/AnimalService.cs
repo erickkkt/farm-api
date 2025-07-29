@@ -26,7 +26,10 @@ namespace Farm.Business.Services
 
         public async Task<IReadOnlyCollection<Animal>> GetAnimals(string sortField, string sortDirection = "asc", int pageIndex = 0, int pageSize = 10)
         {
-            var query = _animalRepository.QueryAll().AsNoTracking();
+            var query = _animalRepository.QueryAll()
+                .Include(x=>x.Cage)
+                .ThenInclude(x=>x.Farm)
+                .AsNoTracking();
 
             if (sortDirection.ToLower().Equals("asc"))
             {

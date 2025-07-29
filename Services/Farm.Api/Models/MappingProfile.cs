@@ -27,7 +27,10 @@ namespace Farm.Api.Models
             
 
             //entities to Dto           
-            CreateMap<Animal, AnimalDetailsDto>();
+            CreateMap<Animal, AnimalDetailsDto>()
+                .ForMember(dest=>dest.FarmId, opt=>opt.MapFrom(src=>src.Cage.FarmId))
+                .ForMember(dest=>dest.CageName, opt=>opt.MapFrom(src=>src.Cage.Name))
+                .ForMember(dest=>dest.FarmName, opt=>opt.MapFrom(src=>src.Cage.Farm.Name));
             CreateMap<Cage, CageDetailsDto>()
                 .ForMember(dest => dest.FarmName, opt => opt.MapFrom(src => src.Farm.Name));
             CreateMap<Domain.Entities.Farm, FarmDetailsDto>();
