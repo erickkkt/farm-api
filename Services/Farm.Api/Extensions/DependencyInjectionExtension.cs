@@ -1,4 +1,7 @@
-﻿using Farm.Business.Services;
+using Farm.Api.Hubs;
+using Farm.Api.Services;
+using Farm.Business.Jobs;
+using Farm.Business.Services;
 using Farm.Business.Services.Interfaces;
 using Farm.Domain.Repositories;
 using Farm.Domain.Repositories.Interfaces;
@@ -11,39 +14,67 @@ namespace Farm.Api.Extensions
     /// </summary>
     public static class DependencyInjectionExtension
     {
-        /// <summary>
-        /// AddBaseSettings method
-        /// </summary>
         public static void AddBaseSettings(this IServiceCollection services, IConfigurationRoot configurationRoot)
         {
             // Base API Configuration Access
-            
         }
 
-        /// <summary>
-        /// AddRepositories method
-        /// </summary>
         public static void AddRepositories(this IServiceCollection services)
         {
+            // Existing
             services.AddScoped<IAnimalRepository, AnimalRepository>();
             services.AddScoped<IFarmRepository, FarmRepository>();
             services.AddScoped<ICageRepository, CageRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+
+            // Phase 1
+            services.AddScoped<IVaccineRepository, VaccineRepository>();
+            services.AddScoped<IVaccineScheduleRepository, VaccineScheduleRepository>();
+            services.AddScoped<IDiseaseRecordRepository, DiseaseRecordRepository>();
+            services.AddScoped<ITreatmentRepository, TreatmentRepository>();
+            services.AddScoped<IFeedItemRepository, FeedItemRepository>();
+            services.AddScoped<IFeedTransactionRepository, FeedTransactionRepository>();
+            services.AddScoped<IFeedConsumptionRepository, FeedConsumptionRepository>();
+            services.AddScoped<IGrowthLogRepository, GrowthLogRepository>();
+            services.AddScoped<IAlertRepository, AlertRepository>();
         }
 
-
-        /// <summary>
-        /// AddServices method
-        /// </summary>
         public static void AddServices(this IServiceCollection services, IConfigurationRoot configurationRoot)
         {
-            services.AddSingleton<IMemoryCache, MemoryCache>();            
+            services.AddSingleton<IMemoryCache, MemoryCache>();
+            services.AddHttpContextAccessor();
 
+            // Existing
             services.AddScoped<IAnimalService, AnimalService>();
             services.AddScoped<IFarmService, FarmService>();
             services.AddScoped<ICageService, CageService>();
             services.AddScoped<IUserService, UserService>();
+
+            // Phase 1
+            services.AddScoped<IVaccineService, VaccineService>();
+            services.AddScoped<IFeedService, FeedService>();
+            services.AddScoped<IGrowthLogService, GrowthLogService>();
+            services.AddScoped<IDiseaseService, DiseaseService>();
+            services.AddScoped<IAlertService, AlertService>();
+            services.AddScoped<IReportService, ReportService>();
+
+            // Phase 2 - Marketplace
+            services.AddScoped<IListingService, ListingService>();
+
+            // Phase 3 - Investment
+            services.AddScoped<IInvestmentService, InvestmentService>();
+
+            // Hangfire jobs
+            services.AddScoped<IVaccineReminderJob, VaccineReminderJob>();
+            services.AddScoped<IWeightDropDetectorJob, WeightDropDetectorJob>();
+            services.AddScoped<IStagnantGrowthJob, StagnantGrowthJob>();
+            services.AddScoped<IFeedLowStockJob, FeedLowStockJob>();
+            services.AddScoped<IDailyReportJob, DailyReportJob>();
+
+            // Storage + Realtime
+            services.AddScoped<IMediaStorageService, LocalFileStorageService>();
+            services.AddScoped<INotificationPublisher, SignalRNotificationPublisher>();
         }
 
         public static void AddSecurityHeaders(this IApplicationBuilder app)
